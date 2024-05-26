@@ -1,11 +1,6 @@
-let WINCOUNTER1 = 0;
-let WINCOUNTER2 = 0;
-
-
 function game(){
     const _rows = 3;
     const _columns = 3;
-
     /* Creating the game area array         [[ [0],[0],[0] ],
                                              [ [0],[0],[0] ],
                                              [ [0],[0],[0] ]]
@@ -74,10 +69,13 @@ function game(){
 }
 
 function gameController(playerOne = "Player One", playerTwo = "Player Two"){
+    let _winCounter1 = 0;
+    let _winCounter2 = 0;
     const _gameBoard = game();
     const _rows = _gameBoard.rows;
     const _columns = _gameBoard.columns;
     let _emptyCells = [];
+    let _someOneWon = false;
 
     const winConditions = [
         // Horizontal
@@ -112,20 +110,26 @@ function gameController(playerOne = "Player One", playerTwo = "Player Two"){
     // Playing a round
     function playRound(row, col){
         console.log(_activePlayer.name);
+        // If someone Won already return
+        if (_someOneWon) return 5;
         // Check if it is a valid play (not occupied)
         let validPlay = _gameBoard.playRound(row, col, _activePlayer.value);
-
         if(!validPlay){
             console.log("occupied");
             return false;
         } 
-        // Check if someone won already
+        // Check if someone won the round
         let someoneWon = checkWin();
         if(someoneWon) {
-            _activePlayer === players[0] ? (WINCOUNTER1++) : (WINCOUNTER2++);
+            _activePlayer === players[0] ? (_winCounter1++) : (_winCounter2++);
+            console.log(_winCounter1);
             console.log(`${_activePlayer.name} WON`);
+            // Return 1 if player1 Won 3 times
+            if (_winCounter1 >= 3) return 1;
+            // Return 2 if player2 Won 3 times
+            if (_winCounter2 >= 3) return 2;
             // TO DO
-            return false;
+            _someOneWon = true;
         }
         
         switchActivePlayer();
@@ -159,12 +163,20 @@ function gameController(playerOne = "Player One", playerTwo = "Player Two"){
         // Clear the board
         _gameBoard.clearBoard();
         _activePlayer = players[0];
+        _someOneWon = false;
         // TO DO
+    }
+
+    function restartGame(){
+        clearBoard();
+        _winCounter1 = 0;
+        _winCounter2 = 0;
     }
 
     return {
         playRound,
         clearBoard,
+        restartGame,
         get board(){
             return _gameBoard.board;
         },
@@ -238,8 +250,8 @@ function aiController(playerOne = "Player One"){
 
 function screenController(playerOne, playerTwo){
     let aiEnabled = false;
-    // Create controller based on aiEnabled
-    const _GAME = aiEnabled ? aiController(playerOne) : gameController(playerOne, playerTwo);
+    // Create controller 
+    const _GAME = gameController(playerOne, playerTwo);
 
     // UI elements
     const restartButton = document.querySelector("#restart");
@@ -253,7 +265,6 @@ function screenController(playerOne, playerTwo){
     const playerTurnDiv = document.querySelector('.turn');
     const boardDiv = document.querySelector(".board");
 
-    
     function initialRender(){
         // Clear the board
         boardDiv.textContent = "";
@@ -273,18 +284,26 @@ function screenController(playerOne, playerTwo){
                 boardDiv.appendChild(cellButton);
         })
       })
-     
     }
-
+    
+    // cell is a button element
     function updateScreen(cell){
+        // Get the active Player
         let activePlayer = _GAME.activePlayer;
-        cell.textContent = activePlayer.value;
-
+        // Get the coordinates of the cell
         const selectedCellRow = cell.dataset.row;
         const selectedCellColumn = cell.dataset.column;
-        // Make sure I've clicked a cell and not the gaps in between
-        if (!selectedCellRow) return;
-        _GAME.playRound(selectedCellRow, selectedCellColumn);
+        // Check if play is valid
+        let isValid = _GAME.playRound(selectedCellRow, selectedCellColumn);
+        if (!isValid) return;
+        // Check if someone WIN the GAME
+        if (isValid === 1) console.log("3 in a row");
+        if (isValid === 2) console.log("3 in a row");
+        // Check if someone WON a round
+        if (isValid === 5) return;
+        // Put the value of the player into the cell
+        cell.textContent = activePlayer.value;
+        // Get the next active player
         let nextActivePlayer = _GAME.activePlayer;
         // Display player's turn
         playerTurnDiv.textContent = `${nextActivePlayer.name}'s turn...`;
@@ -294,6 +313,10 @@ function screenController(playerOne, playerTwo){
     // Add event listener for the board
     function clickHandlerBoard(e) {
         const cell = e.target;
+        // Get the coordinates of the cell
+        const selectedCellRow = cell.dataset.row;
+        // Make sure I've clicked a cell and not the gaps in between
+        if (!selectedCellRow) return;
         updateScreen(cell);
         
     }
