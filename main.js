@@ -76,6 +76,7 @@ function gameController(playerOne = "Player One", playerTwo = "Player Two"){
     const _columns = _gameBoard.columns;
     let _emptyCells = [];
     let _someOneWon = false;
+    let _isDraw = false;
 
     const winConditions = [
         // Horizontal
@@ -110,8 +111,8 @@ function gameController(playerOne = "Player One", playerTwo = "Player Two"){
     // Playing a round
     function playRound(row, col){
         console.log(_activePlayer.name);
-        // If someone Won already return
-        if (_someOneWon) return 5;
+        // If someone Won already or its draw return
+        if (_someOneWon || _isDraw) return 5;
         // Check if it is a valid play (not occupied)
         let validPlay = _gameBoard.playRound(row, col, _activePlayer.value);
         if(!validPlay){
@@ -131,13 +132,18 @@ function gameController(playerOne = "Player One", playerTwo = "Player Two"){
             // TO DO
             _someOneWon = true;
         }
+        // Check if it is DRAW
+        if (checkDraw()){
+            console.log("ITS DRAW");
+            _isDraw = true;
+        } 
         
         switchActivePlayer();
         return true;
     }
 
     function checkWin(){
-        // Clear empty cells
+        // Clear empty cells before repopulating it
         _emptyCells = [];
         // Get the current board
         let currentBoard = _gameBoard.board; 
@@ -159,11 +165,18 @@ function gameController(playerOne = "Player One", playerTwo = "Player Two"){
         return false;
     }
 
+    function checkDraw(){
+        // Return true if its DRAW
+        if (_emptyCells === undefined || _emptyCells.length === 0) return true;
+        return false;
+    }
+
     function clearBoard(){
         // Clear the board
         _gameBoard.clearBoard();
         _activePlayer = players[0];
         _someOneWon = false;
+        _isDraw = false;
         // TO DO
     }
 
@@ -297,9 +310,15 @@ function screenController(playerOne, playerTwo){
         let isValid = _GAME.playRound(selectedCellRow, selectedCellColumn);
         if (!isValid) return;
         // Check if someone WIN the GAME
-        if (isValid === 1) console.log("3 in a row");
-        if (isValid === 2) console.log("3 in a row");
-        // Check if someone WON a round
+        if (isValid === 1) {
+            console.log("Player 1 3 in a row");
+            return;
+        }
+        if (isValid === 2){
+            console.log("Player2 3 in a row");
+            return;
+        }
+        // Check if someone WON a round or its Draw
         if (isValid === 5) return;
         // Put the value of the player into the cell
         cell.textContent = activePlayer.value;
@@ -331,7 +350,7 @@ function screenController(playerOne, playerTwo){
    
 }
 
-screenController("Szabolcs", "Péter");
+screenController("Szabolcs", "Magdolna");
 
 
 
