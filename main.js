@@ -289,6 +289,7 @@ function screenController(playerOne, playerTwo, ai = false){
         // Make sure I've clicked a cell and not the gaps in between
         if (!selectedCellRow) return;
         updateScreen(cell);
+        
         if (!aiController) return;
         updateScreen(aiController());
         
@@ -328,7 +329,7 @@ function screenController(playerOne, playerTwo, ai = false){
    
 }
 
-screenController("Szabolcs", "Magdolna", true);
+screenController("Szabolcs", "AI", true);
 
 
 
