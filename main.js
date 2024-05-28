@@ -133,7 +133,7 @@ function gameController(playerOne = "Player One", playerTwo = "Player Two"){
             _someOneWon = true;
         }
         // Check if it is DRAW
-        if (checkDraw()){
+        if (checkDraw() && !_someOneWon){
             console.log("ITS DRAW");
             _isDraw = true;
         } 
@@ -208,61 +208,10 @@ function gameController(playerOne = "Player One", playerTwo = "Player Two"){
     }
 }
 
-function aiController(playerOne = "Player One"){
-    const _gameController = gameController(playerOne, "AI");
-
-    const clearBoard = () => _gameController.clearBoard();
-
-    // Check if it's AI's turn
-    if (_gameController.activePlayer.name === "AI"){
-        // AI's turn
-        _gameController.playRound(randomNumber([0,1,2]), randomNumber([0,1,2]));
-    }
-
-    // MAKE THIS from screencontroller TO DO
-    function playRound(row, col){
-        // Player's turn
-        // If it's invalid or someone won return
-        if (!_gameController.playRound(row, col) ) return;
-        
-        // Get the empty cells
-        let emptyCells = _gameController.emptyCells;
-
-        // AI's turn
-        // Get a random cell from the empty cells
-        let randomCell = randomNumber(emptyCells);
-        _gameController.playRound(randomCell[0], randomCell[1]);
-        
-         
-    }
-    
-    // Return a random element from an array eg. [2,0] -> 2 or 0 
-    function randomNumber(arr){
-        let index = Math.floor(Math.random() * arr.length);
-        return arr[index];
-    }
-    
-
-    return {
-        playRound,
-        clearBoard,
-        get board(){
-           return _gameController.board
-        },
-        get activePlayer(){
-            return _gameController.activePlayer;
-        },
-        get rows(){
-            return _gameController.rows;
-        },
-        get columns(){
-            return _gameController.columns;
-        }
-    }
-}
-
-function screenController(playerOne, playerTwo){
-    let aiEnabled = false;
+function screenController(playerOne, playerTwo, ai = false){
+    let p1Won3inaRow = false;
+    let p2Won3inaRow = false;
+    let aiEnabled = ai;
     // Create controller 
     const _GAME = gameController(playerOne, playerTwo);
 
@@ -301,6 +250,9 @@ function screenController(playerOne, playerTwo){
     
     // cell is a button element
     function updateScreen(cell){
+        if (cell === undefined) return;
+        // If someone won the game just return
+        if(p1Won3inaRow || p2Won3inaRow) return;
         // Get the active Player
         let activePlayer = _GAME.activePlayer;
         // Get the coordinates of the cell
@@ -309,17 +261,17 @@ function screenController(playerOne, playerTwo){
         // Check if play is valid
         let isValid = _GAME.playRound(selectedCellRow, selectedCellColumn);
         if (!isValid) return;
+        // Check if someone WON a round or its Draw
+        if (isValid === 5) return;
         // Check if someone WIN the GAME
         if (isValid === 1) {
             console.log("Player 1 3 in a row");
-            return;
+            p1Won3inaRow = true;
         }
         if (isValid === 2){
             console.log("Player2 3 in a row");
-            return;
+            p2Won3inaRow = true;
         }
-        // Check if someone WON a round or its Draw
-        if (isValid === 5) return;
         // Put the value of the player into the cell
         cell.textContent = activePlayer.value;
         // Get the next active player
@@ -337,8 +289,34 @@ function screenController(playerOne, playerTwo){
         // Make sure I've clicked a cell and not the gaps in between
         if (!selectedCellRow) return;
         updateScreen(cell);
+        if (!aiController) return;
+        updateScreen(aiController());
         
     }
+
+    // ai controller
+    function aiController(){
+         // Get the empty cells
+         let emptyCells = _GAME.emptyCells;
+         
+         if (emptyCells === undefined || emptyCells.length === 0) return undefined;
+
+         // Get a random cell from the empty cells
+         let randomCell = randomNumber(emptyCells);
+
+         // Find the same button on the board
+         let row = randomCell[0];
+         let column = randomCell[1];
+         const cell = document.querySelector(`[data-row="${row}"][data-column="${column}"]`);
+         return cell;
+    }
+
+    // Return a random array element from an array eg. [2,0] -> 2 or 0 
+    function randomNumber(arr){
+        let index = Math.floor(Math.random() * arr.length);
+        return arr[index];
+    }
+
     boardDiv.addEventListener("click", clickHandlerBoard);
 
     function restartGame(){
@@ -350,7 +328,7 @@ function screenController(playerOne, playerTwo){
    
 }
 
-screenController("Szabolcs", "Magdolna");
+screenController("Szabolcs", "Magdolna", true);
 
 
 
