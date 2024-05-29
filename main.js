@@ -101,7 +101,7 @@ function gameController(playerOne = "Player One", playerTwo = "Player Two"){
 
     // Setting the active player
     // TO DO randomize maybe
-    let _activePlayer = players[1];
+    let _activePlayer = players[0];
 
     // Switching the active player status
     function switchActivePlayer(){
@@ -351,7 +351,7 @@ function screenController(playerOne, playerTwo, ai = false){
    
 }
 
-screenController("Zsolti", "Szabi", true);
+screenController("You", "AI", true);
 
 
 
