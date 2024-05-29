@@ -101,7 +101,7 @@ function gameController(playerOne = "Player One", playerTwo = "Player Two"){
 
     // Setting the active player
     // TO DO randomize maybe
-    let _activePlayer = players[0];
+    let _activePlayer = players[1];
 
     // Switching the active player status
     function switchActivePlayer(){
@@ -230,9 +230,13 @@ function screenController(playerOne, playerTwo, ai = false){
     function initialRender(){
         // Clear the board
         boardDiv.textContent = "";
+
+        // Get the active player
+        const activePlayer = _GAME.activePlayer;
+        
             
         // Display player's turn
-        playerTurnDiv.textContent = `${_GAME.activePlayer.name}'s turn...`
+        playerTurnDiv.textContent = `${activePlayer.name}'s turn...`
 
          // Render board squares
         _GAME.board.forEach((row, i) => {
@@ -242,10 +246,10 @@ function screenController(playerOne, playerTwo, ai = false){
                 // Create a data attribute to identify the row and column
                 cellButton.dataset.row = i;
                 cellButton.dataset.column = j;
-                cellButton.textContent = cell.value;
                 boardDiv.appendChild(cellButton);
         })
       })
+      hoverChange(activePlayer);
     }
     
     // cell is a button element
@@ -258,7 +262,7 @@ function screenController(playerOne, playerTwo, ai = false){
         // Get the coordinates of the cell
         const selectedCellRow = cell.dataset.row;
         const selectedCellColumn = cell.dataset.column;
-        // Check if play is valid
+        // Check if play is valid PLAY the round
         let isValid = _GAME.playRound(selectedCellRow, selectedCellColumn);
         if (!isValid) return;
         // Check if someone WON a round or its Draw
@@ -273,11 +277,15 @@ function screenController(playerOne, playerTwo, ai = false){
             p2Won3inaRow = true;
         }
         // Put the value of the player into the cell
-        cell.textContent = activePlayer.value;
+        //cell.textContent = activePlayer.value;
+        // Change the cell's color
+        cell.classList.add(`p${activePlayer.value}`);
         // Get the next active player
         let nextActivePlayer = _GAME.activePlayer;
         // Display player's turn
         playerTurnDiv.textContent = `${nextActivePlayer.name}'s turn...`;
+        // Change the hover color
+        hoverChange(nextActivePlayer);
         
     }
 
@@ -295,8 +303,6 @@ function screenController(playerOne, playerTwo, ai = false){
         setTimeout(() => {
             updateScreen(aiController());
         }, 2000);
-        
-        
     }
 
     // ai controller
@@ -314,6 +320,19 @@ function screenController(playerOne, playerTwo, ai = false){
          let column = randomCell[1];
          const cell = document.querySelector(`[data-row="${row}"][data-column="${column}"]`);
          return cell;
+    }
+
+    // Change the hover color
+    function hoverChange(activeP){
+        const cells = document.querySelectorAll(".cell:not(.p1):not(.p2)");
+
+        cells.forEach((cell) => {
+            // First remove all the hover classes
+            cell.classList.remove("hoverP1", "hoverP2");
+            // Set the desired hover class
+            cell.classList.add(`hoverP${activeP.value}`);
+        })
+
     }
 
     // Return a random array element from an array eg. [2,0] -> 2 or 0 
