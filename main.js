@@ -299,7 +299,6 @@ function screenController(playerOne, playerTwo, ai = false){
         updateScreen(cell);
         
         if (!aiEnabled) return;
-        console.log("NEM AI");
         setTimeout(() => {
             updateScreen(aiController());
         }, 2000);

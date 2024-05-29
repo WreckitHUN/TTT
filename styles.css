@@ -4,19 +4,20 @@
     width: 500px;
     grid-template-columns: repeat(3, 1fr);
     grid-template-rows: repeat(3, 1fr);
-    border: 1px solid black;
-    gap: 2px;
+    gap: 10px;
     padding: 2px;
   }
   
   .cell {
+    border: none;
     display: flex;
     justify-content: center;
     align-items: center;
     text-align: center;
     font-size: 2rem;
-    border: 1px solid grey;
-    background: lightyellow;
+    background: #ccc;
+    outline: none;
+    border-radius: 20px;
     cursor: pointer;
     
     transition: all 0.5s;
@@ -24,12 +25,12 @@
 
   .cell.p1{
     background: dodgerblue;
-    transform: rotateY(360deg);
+    transform: scale(0.8);
   }
 
   .cell.p2{
     background: orange;
-    transform: rotateY(360deg);
+    transform: scale(0.8);
   }
 
   .hoverP1:hover{
