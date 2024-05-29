@@ -351,7 +351,7 @@ function screenController(playerOne, playerTwo, ai = false){
    
 }
 
-screenController("Zsolti", "Szabi", false);
+screenController("Zsolti", "Szabi", true);
 
 
 
