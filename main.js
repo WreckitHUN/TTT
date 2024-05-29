@@ -290,8 +290,12 @@ function screenController(playerOne, playerTwo, ai = false){
         if (!selectedCellRow) return;
         updateScreen(cell);
         
-        if (!aiController) return;
-        updateScreen(aiController());
+        if (!aiEnabled) return;
+        console.log("NEM AI");
+        setTimeout(() => {
+            updateScreen(aiController());
+        }, 2000);
+        
         
     }
 
@@ -329,7 +333,7 @@ function screenController(playerOne, playerTwo, ai = false){
    
 }
 
-screenController("Szabolcs", "AI", true);
+screenController("Zsolti", "Szabi", false);
 
 
 
