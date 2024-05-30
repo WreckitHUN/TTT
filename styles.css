@@ -1,3 +1,72 @@
+:root{
+  --color-p1: #003049;
+  --color-p2: #c1121f;
+}
+
+*, *::after, *::before{
+  box-sizing: border-box;
+}
+
+/* Topography */
+html{
+  /* 62.5% of 16px is 10px */
+  font-size: 62.5%;
+}
+
+body{
+  color: var(--color-body);
+  font-family: Quicksand, Arial, Helvetica, sans-serif;
+  font-size: 2.5rem;
+  line-height: 1.5;
+
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+h1, h2, h3{
+  color: var(--color-headings);
+  margin-bottom: 1rem;
+  line-height: 1.1;
+}
+
+h1{
+  font-size: 5rem;
+}
+
+h2{
+  font-size: 3rem;
+}
+
+h3{
+  font-size: 2.4rem;
+}
+
+p{
+  margin: 0;
+}
+
+.container{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+footer{
+  display: flex;
+  justify-content: center;
+  font-weight: 700;
+  padding: 1rem;
+  background: #ccc;
+}
+
+.winCounter{
+  display: flex;
+  justify-content: space-around;
+  transition: all 1s;
+}
+
 .board {
     display: grid;
     height: 500px;
@@ -8,7 +77,7 @@
     padding: 2px;
   }
   
-  .cell {
+.cell {
     border: none;
     display: flex;
     justify-content: center;
@@ -20,23 +89,23 @@
     border-radius: 20px;
     cursor: pointer;
     
-    transition: all 0.5s;
+    transition: all 0.3s;
   }
 
-  .cell.p1{
-    background: dodgerblue;
-    transform: scale(0.8);
+.cell.p1{
+    background: var(--color-p1);
+    transform: scale(0.9);
   }
 
-  .cell.p2{
-    background: orange;
-    transform: scale(0.8);
+.cell.p2{
+    background: var(--color-p2);
+    transform: scale(0.9);
   }
 
-  .hoverP1:hover{
-    background: dodgerblue;
+.hoverP1:hover{
+    background: var(--color-p1);
   }
 
-  .hoverP2:hover{
-    background: orange;
+.hoverP2:hover{
+    background: var(--color-p2);
   }

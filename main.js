@@ -172,12 +172,11 @@ function gameController(playerOne = "Player One", playerTwo = "Player Two"){
     }
 
     function clearBoard(){
-        // Clear the board
+        // Clear the board and restarts the round
         _gameBoard.clearBoard();
         _activePlayer = players[0];
         _someOneWon = false;
         _isDraw = false;
-        // TO DO
     }
 
     function restartGame(){
@@ -190,6 +189,12 @@ function gameController(playerOne = "Player One", playerTwo = "Player Two"){
         playRound,
         clearBoard,
         restartGame,
+        get winCounter1(){
+            return _winCounter1;
+        },
+        get winCounter2(){
+            return _winCounter2;
+        },
         get board(){
             return _gameBoard.board;
         },
@@ -199,12 +204,7 @@ function gameController(playerOne = "Player One", playerTwo = "Player Two"){
         get emptyCells(){
             return _emptyCells;
         },
-        get rows(){
-            return _rows;
-        },
-        get columns(){
-            return _columns;
-        }
+        
     }
 }
 
@@ -216,28 +216,27 @@ function screenController(playerOne, playerTwo, ai = false){
     const _GAME = gameController(playerOne, playerTwo);
 
     // UI elements
-    const restartButton = document.querySelector("#restart");
-    restartButton.addEventListener("click", restartGame);
-
-    // Get the dimensions of the board
-    const _rows = _GAME.rows;
-    const _columns = _GAME.columns;
+    const restartButton = document.querySelector("#restartRound");
+    const restartGameButton = document.querySelector("#restartGame");
+    restartButton.addEventListener("click", restartRound);
+    restartGameButton.addEventListener("click", restartGame);
 
     // Get the turn and board elements
     const playerTurnDiv = document.querySelector('.turn');
     const boardDiv = document.querySelector(".board");
+    const p1Counter = document.querySelector(".p1Counter");
+    const p2Counter = document.querySelector(".p2Counter");
 
     function initialRender(){
         // Clear the board
         boardDiv.textContent = "";
-
         // Get the active player
         const activePlayer = _GAME.activePlayer;
-        
-            
         // Display player's turn
         playerTurnDiv.textContent = `${activePlayer.name}'s turn...`
-
+        // Display player counter
+        p1Counter.textContent = `${playerOne}: ${_GAME.winCounter1}`;
+        p2Counter.textContent = `${playerTwo}: ${_GAME.winCounter2}`;
          // Render board squares
         _GAME.board.forEach((row, i) => {
             row.forEach((cell, j) => {
@@ -276,8 +275,9 @@ function screenController(playerOne, playerTwo, ai = false){
             console.log("Player2 3 in a row");
             p2Won3inaRow = true;
         }
-        // Put the value of the player into the cell
-        //cell.textContent = activePlayer.value;
+        // Update the winCounter
+        p1Counter.textContent = `${playerOne}: ${_GAME.winCounter1}`;
+        p2Counter.textContent = `${playerTwo}: ${_GAME.winCounter2}`;
         // Change the cell's color
         cell.classList.add(`p${activePlayer.value}`);
         // Get the next active player
@@ -342,8 +342,15 @@ function screenController(playerOne, playerTwo, ai = false){
 
     boardDiv.addEventListener("click", clickHandlerBoard);
 
-    function restartGame(){
+    function restartRound(){
         _GAME.clearBoard();
+        initialRender();
+    }
+
+    function restartGame(){
+        _GAME.restartGame();
+        p1Won3inaRow = false;
+        p2Won3inaRow = false;
         initialRender();
     }
 
@@ -351,7 +358,7 @@ function screenController(playerOne, playerTwo, ai = false){
    
 }
 
-screenController("You", "AI", true);
+screenController("P1", "P2", false);
 
 
 
